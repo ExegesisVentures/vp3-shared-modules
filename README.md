@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VP3 Shared Modules
 
-## Getting Started
+This repository contains shared React components, hooks, types, and utilities for the VP3 video platform. It's designed to be used by both the admin and user frontends.
 
-First, run the development server:
+## Installation
+
+Add this package to your project:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Using npm
+npm install git+https://github.com/yourOrg/vp3-shared-modules.git
+
+# Using yarn
+yarn add git+https://github.com/yourOrg/vp3-shared-modules.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Components
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### QuizDisplay
 
-## Learn More
+A reusable component for displaying quiz questions and options:
 
-To learn more about Next.js, take a look at the following resources:
+```tsx
+import { QuizDisplay } from '@vp3/shared-modules';
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+function VideoPlayer() {
+  const handleAnswer = (optionId: string) => {
+    // Handle answer selection
+  };
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  return (
+    <QuizDisplay
+      quiz={quizData}
+      options={quizOptions}
+      onAnswer={handleAnswer}
+    />
+  );
+}
+```
 
-## Deploy on Vercel
+#### PopupMessage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A component for showing motivational and gamification popups:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```tsx
+import { PopupMessage } from '@vp3/shared-modules';
+
+function VideoPlayer() {
+  const handleClose = () => {
+    // Handle popup dismissal
+  };
+
+  return (
+    <PopupMessage
+      popup={popupData}
+      onClose={handleClose}
+    />
+  );
+}
+```
+
+### Hooks
+
+#### useQuizLogic
+
+Manages quiz state and interactions:
+
+```tsx
+import { useQuizLogic } from '@vp3/shared-modules';
+
+function VideoPlayer() {
+  const { currentQuiz, quizOptions, loading, error, fetchQuizAtTimestamp, submitAnswer } = useQuizLogic({
+    supabase,
+    videoId
+  });
+}
+```
+
+#### usePopups
+
+Handles popup display and timing:
+
+```tsx
+import { usePopups } from '@vp3/shared-modules';
+
+function VideoPlayer() {
+  const { currentPopup, loading, error, fetchPopupAtTimestamp, dismissPopup } = usePopups({
+    supabase,
+    videoId
+  });
+}
+```
+
+#### usePoints
+
+Manages point calculations and streak bonuses:
+
+```tsx
+import { usePoints } from '@vp3/shared-modules';
+
+function VideoPlayer() {
+  const { points, streak, addPoints, spendPoints, incrementStreak, resetStreak } = usePoints({
+    initialPoints: 0
+  });
+}
+```
+
+### Utils
+
+#### formatTimestamp
+
+```tsx
+import { formatTimestamp, parseTimestamp } from '@vp3/shared-modules';
+
+const timeString = formatTimestamp(125); // "02:05"
+const seconds = parseTimestamp("02:05"); // 125
+```
+
+#### pointCalculations
+
+```tsx
+import { calculateQuizPoints, calculateStreakBonus } from '@vp3/shared-modules';
+
+const points = calculateQuizPoints(100, 5); // 150 (quick answer bonus)
+const bonus = calculateStreakBonus(5); // 50 (streak bonus)
+```
+
+## Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourOrg/vp3-shared-modules.git
+cd vp3-shared-modules
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start development mode:
+```bash
+npm run dev
+```
+
+4. Build the package:
+```bash
+npm run build
+```
+
+## Contributing
+
+1. Create a new branch for your feature
+2. Make your changes
+3. Submit a pull request
+
+## License
+
+Private - All rights reserved
